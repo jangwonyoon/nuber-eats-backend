@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
 import { RestaurantsModule } from './restaurants/restaurants.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 /* GraphQLModule을 가져와서 forRoot()함수로 루트 모듈을 설정 
 
@@ -20,12 +20,24 @@ autoSchemaFile: true,을 통해 gql을 생성 하지 않아도 된다.
 
 */
 
+/* Postgres는 localhost연결에서는 password를 추적하지 않는다. */
+
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'yoonjangwon',
+      password: 'test',
+      database: 'nuber-eats',
+      synchronize: true,
+      logging: true,
+    }),
+    RestaurantsModule,
     GraphQLModule.forRoot({
       autoSchemaFile: true,
     }),
-    RestaurantsModule,
   ],
   controllers: [],
   providers: [],
