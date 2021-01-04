@@ -29,19 +29,27 @@ autoSchemaFile: true,을 통해 gql을 생성 하지 않아도 된다.
 
 */
 
+/* 
+  서버에 deploy 할 때 환경변수 파일을 사용하지 않는다. process.env.NODE_ENV === prod
+
+
+  validationSchema를 통해 내가 원하는 모든 환경 변수의 유효성을 검사할 수 있다. 
+*/
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
+      ignoreEnvFile: process.env.NODE_ENV === 'prod',
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'yoonjangwon',
-      password: 'test',
-      database: 'nuber-eats',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       synchronize: true,
       logging: true,
     }),
